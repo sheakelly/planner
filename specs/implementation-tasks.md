@@ -6,9 +6,9 @@
 - [x] Install deps: @tanstack/react-router, @tanstack/query, date-fns, idb (or Dexie), zustand/jotai.
 
 ## 1. Data Model & Storage (MVP)
-- [ ] Define types: Day { id, date, timezone }, Block { id, dayId, title, notes, start, end, duration, status, tags, color, priority }.
-- [ ] Validation utils (start < end; non-overlap helper; snap-to-15m).
-- [ ] Local persistence: IndexedDB schema (days, blocks); CRUD service with optimistic updates.
+- [x] Define types: Day { id, date, timezone }, Block { id, dayId, title, notes, start, end, duration, status, tags, color, priority }.
+- [x] Validation utils (start < end; non-overlap helper; snap-to-15m).
+- [x] Local persistence: IndexedDB schema (days, blocks); CRUD service with optimistic updates.
 
 ## 2. Routing, SSR/SSG, Data Loading
 - [ ] File-based routes: /day/:date (primary), /week/:start.
