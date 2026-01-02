@@ -11,9 +11,9 @@
 - [x] Local persistence: IndexedDB schema (days, blocks); CRUD service with optimistic updates.
 
 ## 2. Routing, SSR/SSG, Data Loading
-- [ ] File-based routes: /day/:date (primary), /week/:start.
-- [ ] Server functions/actions for auth (stub), CRUD (later), and data ops.
-- [ ] Integrate TanStack Query for caching, optimistic updates, and invalidation.
+- [x] File-based routes: /day/:date (primary), /week/:start.
+- [x] Server functions/actions for auth (stub), CRUD (later), and data ops.
+- [x] Integrate TanStack Query for caching, optimistic updates, and invalidation.
 
 ## 3. Timeline UI (MVP)
 - [ ] Daily timeline using CSS Grid (15-min slots), mobile-first responsive.
