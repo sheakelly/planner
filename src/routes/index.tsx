@@ -1,18 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { Navigate, createFileRoute } from '@tanstack/react-router';
+import { format } from 'date-fns';
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({ component: App });
 
 function App() {
-  return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto p-8">
-        <h1 className="text-4xl font-bold text-slate-900 mb-4">
-          Daily Time Block Planner
-        </h1>
-        <p className="text-slate-600">
-          Plan your day with visual time blocks
-        </p>
-      </div>
-    </div>
-  )
+  const today = format(new Date(), 'yyyy-MM-dd');
+
+  return <Navigate to="/day/$date" params={{ date: today }} />;
 }

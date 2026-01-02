@@ -275,7 +275,7 @@ describe('findOverlappingBlocks', () => {
 
     const overlapping = findOverlappingBlocks(block1, existingBlocks);
     expect(overlapping).toHaveLength(1);
-    expect(overlapping[0]!.id).toBe('2');
+    expect(overlapping[0].id).toBe('2');
   });
 
   it('should only find blocks on the same day', () => {
@@ -292,7 +292,7 @@ describe('findOverlappingBlocks', () => {
 
     const overlapping = findOverlappingBlocks(newBlock, existingBlocks);
     expect(overlapping).toHaveLength(1);
-    expect(overlapping[0]!.id).toBe('3');
+    expect(overlapping[0].id).toBe('3');
   });
 
   it('should return empty array when no overlaps exist', () => {
@@ -324,6 +324,6 @@ describe('findOverlappingBlocks', () => {
 
     const overlapping = findOverlappingBlocks(newBlockInput, existingBlocks);
     expect(overlapping).toHaveLength(1);
-    expect(overlapping[0]!.id).toBe('2');
+    expect(overlapping[0].id).toBe('2');
   });
 });
