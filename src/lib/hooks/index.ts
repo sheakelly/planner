@@ -1,1 +1,1 @@
-export * from './use-blocks';
+export * from './useBlocks';
