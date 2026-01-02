@@ -1,5 +1,5 @@
 import { differenceInMinutes, parseISO } from 'date-fns';
-import type { Block, BlockInput } from '../types';
+import type { Block, BlockInput } from '../../types';
 
 const SLOT_MINUTES = 15;
 
