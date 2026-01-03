@@ -1,18 +1,25 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { format, parseISO, setHours, setMinutes } from 'date-fns'
-import { Check, Edit2, Trash2, X } from 'lucide-react'
+import { Check, Edit2, Settings, Trash2, X } from 'lucide-react'
 import { checkOverlap, snapToQuarterHour } from '../lib/utils'
-import { useCreateBlock, useDeleteBlock, useUpdateBlock } from '../lib/hooks'
+import {
+  useCreateBlock,
+  useDeleteBlock,
+  useUpdateBlock,
+  useUpdatePreferences,
+} from '../lib/hooks'
 import { BlockCard } from './BlockCard'
+import { TimelineSettings } from './TimelineSettings'
 import type { Block, BlockStatus, BlockType } from '../types'
 
 interface TimelineProps {
   dayId: string
   date: string
   blocks: Array<Block>
+  startHour: number
+  endHour: number
 }
 
-const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const SLOT_HEIGHT = 60 // 60px per hour, 15px per 15-min slot
 const QUARTER_SLOTS = 4 // 4 quarter-hour slots per hour
 
@@ -24,7 +31,13 @@ const TYPE_LABELS = {
   other: 'Other',
 }
 
-export function Timeline({ dayId, date, blocks }: TimelineProps) {
+export function Timeline({
+  dayId,
+  date,
+  blocks,
+  startHour,
+  endHour,
+}: TimelineProps) {
   const [selectedBlock, setSelectedBlock] = useState<Block | null>(null)
   const [editingBlock, setEditingBlock] = useState<Block | null>(null)
   const [isDragging, setIsDragging] = useState(false)
@@ -37,7 +50,14 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
     null,
   )
   const [currentTime, setCurrentTime] = useState(new Date())
+  const [showSettings, setShowSettings] = useState(false)
   const timelineRef = useRef<HTMLDivElement>(null)
+
+  // Calculate visible hours based on configured range
+  const HOURS = Array.from(
+    { length: endHour - startHour + 1 },
+    (_, i) => startHour + i,
+  )
 
   // Edit form state
   const [editFormData, setEditFormData] = useState({
@@ -51,6 +71,7 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
   const createBlock = useCreateBlock()
   const updateBlock = useUpdateBlock()
   const deleteBlock = useDeleteBlock()
+  const updatePreferences = useUpdatePreferences()
 
   // Calculate block position and height based on time
   const getBlockStyle = (block: Block) => {
@@ -60,7 +81,9 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
     const endMinutes = end.getHours() * 60 + end.getMinutes()
     const durationMinutes = endMinutes - startMinutes
 
-    const top = (startMinutes / 60) * SLOT_HEIGHT
+    // Offset from startHour instead of midnight
+    const offsetMinutes = startHour * 60
+    const top = ((startMinutes - offsetMinutes) / 60) * SLOT_HEIGHT
     const height = (durationMinutes / 60) * SLOT_HEIGHT
 
     return { top, height }
@@ -69,6 +92,54 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
   // Check for overlapping blocks
   const getOverlappingBlocks = (block: Block) => {
     return blocks.filter((b) => b.id !== block.id && checkOverlap(block, b))
+  }
+
+  // Check if block is outside configured hours
+  const isBlockOutsideHours = (block: Block): boolean => {
+    const start = parseISO(block.start)
+    const end = parseISO(block.end)
+    const startHourNum = start.getHours()
+    const endHourNum = end.getHours()
+    const endMinutes = end.getMinutes()
+
+    // Block starts before configured start hour
+    if (startHourNum < startHour) return true
+
+    // Block ends after configured end hour
+    if (endHourNum > endHour || (endHourNum === endHour && endMinutes > 0)) {
+      return true
+    }
+
+    return false
+  }
+
+  // Check if block is in the past (read-only)
+  const isBlockInPast = (block: Block): boolean => {
+    const now = currentTime
+    const dayDate = parseISO(date)
+
+    // Compare dates
+    const isToday =
+      now.getFullYear() === dayDate.getFullYear() &&
+      now.getMonth() === dayDate.getMonth() &&
+      now.getDate() === dayDate.getDate()
+
+    const isPastDay =
+      dayDate < new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    // All blocks on past days are dimmed
+    if (isPastDay) {
+      return true
+    }
+
+    // For today, check if block end time has passed
+    if (isToday) {
+      const blockEnd = parseISO(block.end)
+      return now > blockEnd
+    }
+
+    // Future days - not past
+    return false
   }
 
   // Handle timeline click to create new block
@@ -84,13 +155,16 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
       const clickedMinutes = Math.floor((y / SLOT_HEIGHT) * 60)
       const snappedMinutes = snapToQuarterHour(clickedMinutes)
 
+      // Add startHour offset to get absolute minutes from midnight
+      const absoluteMinutes = snappedMinutes + startHour * 60
+
       const startTime = setMinutes(
-        setHours(parseISO(date), Math.floor(snappedMinutes / 60)),
-        snappedMinutes % 60,
+        setHours(parseISO(date), Math.floor(absoluteMinutes / 60)),
+        absoluteMinutes % 60,
       )
       const endTime = setMinutes(
-        setHours(parseISO(date), Math.floor((snappedMinutes + 60) / 60)),
-        (snappedMinutes + 60) % 60,
+        setHours(parseISO(date), Math.floor((absoluteMinutes + 60) / 60)),
+        (absoluteMinutes + 60) % 60,
       )
 
       createBlock.mutate({
@@ -103,7 +177,15 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
         type: 'other',
       })
     },
-    [dayId, date, createBlock, isDragging, isResizing, selectedBlock],
+    [
+      dayId,
+      date,
+      createBlock,
+      isDragging,
+      isResizing,
+      selectedBlock,
+      startHour,
+    ],
   )
 
   // Handle drag start
@@ -475,6 +557,13 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
     setEditingBlock(null)
   }
 
+  const handleSaveSettings = (newStartHour: number, newEndHour: number) => {
+    updatePreferences.mutate({
+      startHour: newStartHour,
+      endHour: newEndHour,
+    })
+  }
+
   // Calculate current time indicator position
   const getCurrentTimePosition = () => {
     const now = currentTime
@@ -490,7 +579,15 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
     }
 
     const minutes = now.getHours() * 60 + now.getMinutes()
-    const top = (minutes / 60) * SLOT_HEIGHT
+    const offsetMinutes = startHour * 60
+    const endMinutes = endHour * 60
+
+    // Only show indicator if current time is within visible range
+    if (minutes < offsetMinutes || minutes > endMinutes) {
+      return null
+    }
+
+    const top = ((minutes - offsetMinutes) / 60) * SLOT_HEIGHT
     return top
   }
 
@@ -501,6 +598,22 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
       {/* Timeline */}
       <div className="flex-1">
         <div className="bg-white rounded-lg shadow overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
+            <div className="text-sm text-slate-600">
+              Showing {format(setHours(new Date(), startHour), 'h a')} -{' '}
+              {format(setHours(new Date(), endHour), 'h a')}
+            </div>
+            <button
+              onClick={() => setShowSettings(true)}
+              className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-200 rounded-md transition-colors"
+              aria-label="Timeline settings"
+            >
+              <Settings size={16} />
+              Settings
+            </button>
+          </div>
+
           <div className="flex">
             {/* Time labels */}
             <div className="flex-shrink-0 w-16 bg-slate-50 border-r border-slate-200">
@@ -543,6 +656,8 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
                 const style = getBlockStyle(block)
                 const overlaps = getOverlappingBlocks(block)
                 const hasOverlap = overlaps.length > 0
+                const isOutsideHours = isBlockOutsideHours(block)
+                const isPast = isBlockInPast(block)
 
                 return (
                   <BlockCard
@@ -557,6 +672,8 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
                     }}
                     isSelected={selectedBlock?.id === block.id}
                     hasOverlap={hasOverlap}
+                    isOutsideHours={isOutsideHours}
+                    isPast={isPast}
                     onSelect={() => setSelectedBlock(block)}
                     onDragStart={handleDragStart}
                     onResizeStart={handleResizeStart}
@@ -862,6 +979,16 @@ export function Timeline({ dayId, date, blocks }: TimelineProps) {
             )}
           </div>
         </>
+      )}
+
+      {/* Settings Modal */}
+      {showSettings && (
+        <TimelineSettings
+          startHour={startHour}
+          endHour={endHour}
+          onSave={handleSaveSettings}
+          onClose={() => setShowSettings(false)}
+        />
       )}
     </div>
   )

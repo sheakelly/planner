@@ -8,6 +8,8 @@ interface BlockCardProps {
   style?: React.CSSProperties
   isSelected: boolean
   hasOverlap: boolean
+  isOutsideHours?: boolean
+  isPast?: boolean
   onSelect: () => void
   onDragStart: (block: Block, e: React.MouseEvent) => void
   onResizeStart: (
@@ -45,6 +47,8 @@ export function BlockCard({
   style,
   isSelected,
   hasOverlap,
+  isOutsideHours = false,
+  isPast = false,
   onSelect,
   onDragStart,
   onResizeStart,
@@ -57,7 +61,9 @@ export function BlockCard({
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    onSelect()
+    if (!isPast) {
+      onSelect()
+    }
   }
 
   const formatCompactTime = (start: string, end: string) => {
@@ -72,33 +78,39 @@ export function BlockCard({
         STATUS_COLORS[block.status]
       } ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''} ${
         hasOverlap ? 'ring-2 ring-orange-500' : ''
-      }`}
+      } ${isPast ? 'cursor-not-allowed' : 'cursor-pointer'}`}
       style={{
         ...style,
         backgroundColor,
         borderColor: hasOverlap ? '#f97316' : undefined,
-        minHeight: '30px',
+        filter: isPast ? 'grayscale(100%)' : 'none',
+        opacity: isPast ? 0.6 : 1,
       }}
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
-      aria-label={`Time block: ${block.title}`}
+      aria-label={`Time block: ${block.title}${isPast ? ' (read-only)' : ''}`}
       aria-selected={isSelected}
+      aria-disabled={isPast}
     >
       {/* Resize handle - top */}
       <div
-        className={`absolute top-0 left-0 right-0 cursor-ns-resize hover:bg-white/20 flex items-center justify-center ${
+        className={`absolute top-0 left-0 right-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
           isCondensed ? 'h-1' : 'h-2'
         }`}
         onMouseDown={(e) => {
           e.stopPropagation()
-          onResizeStart(block, 'top', e)
+          if (!isPast) {
+            onResizeStart(block, 'top', e)
+          }
         }}
         role="separator"
-        aria-label="Resize block from top"
+        aria-label={isPast ? 'Past block (read-only)' : 'Resize block from top'}
         aria-orientation="horizontal"
       >
-        {!isCondensed && <div className="w-8 h-0.5 bg-white/40 rounded" />}
+        {!isCondensed && !isPast && (
+          <div className="w-8 h-0.5 bg-white/40 rounded" />
+        )}
       </div>
 
       {/* Content */}
@@ -110,12 +122,17 @@ export function BlockCard({
         >
           {/* Drag handle */}
           <button
-            className="flex-shrink-0 cursor-move hover:bg-white/20 rounded p-0.5"
+            className={`flex-shrink-0 ${isPast ? 'cursor-not-allowed opacity-50' : 'cursor-move hover:bg-white/20'} rounded p-0.5`}
             onMouseDown={(e) => {
               e.stopPropagation()
-              onDragStart(block, e)
+              if (!isPast) {
+                onDragStart(block, e)
+              }
             }}
-            aria-label="Drag to move block"
+            aria-label={
+              isPast ? 'Past block (read-only)' : 'Drag to move block'
+            }
+            disabled={isPast}
           >
             <GripVertical size={10} />
           </button>
@@ -140,12 +157,17 @@ export function BlockCard({
           <div className="flex items-start gap-2 mb-1">
             {/* Drag handle */}
             <button
-              className="flex-shrink-0 cursor-move hover:bg-white/20 rounded p-0.5 -ml-1"
+              className={`flex-shrink-0 ${isPast ? 'cursor-not-allowed opacity-50' : 'cursor-move hover:bg-white/20'} rounded p-0.5 -ml-1`}
               onMouseDown={(e) => {
                 e.stopPropagation()
-                onDragStart(block, e)
+                if (!isPast) {
+                  onDragStart(block, e)
+                }
               }}
-              aria-label="Drag to move block"
+              aria-label={
+                isPast ? 'Past block (read-only)' : 'Drag to move block'
+              }
+              disabled={isPast}
             >
               <GripVertical size={14} />
             </button>
@@ -172,6 +194,13 @@ export function BlockCard({
                     size={12}
                     className="text-orange-500 flex-shrink-0"
                     aria-label="Overlapping with another block"
+                  />
+                )}
+                {isOutsideHours && (
+                  <AlertTriangle
+                    size={12}
+                    className="text-yellow-400 flex-shrink-0"
+                    aria-label="Outside configured hours"
                   />
                 )}
               </div>
@@ -204,18 +233,24 @@ export function BlockCard({
 
       {/* Resize handle - bottom */}
       <div
-        className={`absolute bottom-0 left-0 right-0 cursor-ns-resize hover:bg-white/20 flex items-center justify-center ${
+        className={`absolute bottom-0 left-0 right-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
           isCondensed ? 'h-1' : 'h-2'
         }`}
         onMouseDown={(e) => {
           e.stopPropagation()
-          onResizeStart(block, 'bottom', e)
+          if (!isPast) {
+            onResizeStart(block, 'bottom', e)
+          }
         }}
         role="separator"
-        aria-label="Resize block from bottom"
+        aria-label={
+          isPast ? 'Past block (read-only)' : 'Resize block from bottom'
+        }
         aria-orientation="horizontal"
       >
-        {!isCondensed && <div className="w-8 h-0.5 bg-white/40 rounded" />}
+        {!isCondensed && !isPast && (
+          <div className="w-8 h-0.5 bg-white/40 rounded" />
+        )}
       </div>
     </div>
   )

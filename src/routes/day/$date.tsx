@@ -1,6 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { format } from 'date-fns'
-import { useBlocksByDay, useCreateDay, useDayByDate } from '../../lib/hooks'
+import {
+  useBlocksByDay,
+  useCreateDay,
+  useDayByDate,
+  usePreferences,
+} from '../../lib/hooks'
 import { Timeline } from '../../components/Timeline'
 import { PomodoroTimer } from '../../components/PomodoroTimer'
 
@@ -14,6 +19,7 @@ function DayView() {
   const { data: blocks = [], isLoading: blocksLoading } = useBlocksByDay(
     day?.id || '',
   )
+  const { data: preferences, isLoading: prefsLoading } = usePreferences()
   const createDay = useCreateDay()
 
   // Auto-create day if it doesn't exist
@@ -22,7 +28,7 @@ function DayView() {
     createDay.mutate({ date, timezone })
   }
 
-  if (isLoading || blocksLoading) {
+  if (isLoading || blocksLoading || prefsLoading) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-slate-600">Loading...</div>
@@ -39,6 +45,8 @@ function DayView() {
   }
 
   const formattedDate = format(new Date(date), 'EEEE, MMMM d, yyyy')
+  const startHour = preferences?.startHour ?? 8
+  const endHour = preferences?.endHour ?? 18
 
   return (
     <div className="min-h-screen bg-slate-50">
@@ -55,7 +63,13 @@ function DayView() {
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
           {/* Timeline - takes 2 columns on xl screens */}
           <div className="xl:col-span-2">
-            <Timeline dayId={day.id} date={date} blocks={blocks} />
+            <Timeline
+              dayId={day.id}
+              date={date}
+              blocks={blocks}
+              startHour={startHour}
+              endHour={endHour}
+            />
           </div>
 
           {/* Pomodoro Timer - sidebar on xl screens */}

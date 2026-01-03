@@ -33,3 +33,9 @@ export interface BlockInput {
   color?: string
   type?: BlockType
 }
+
+export interface UserPreferences {
+  id: string
+  startHour: number // 0-23, default: 8
+  endHour: number // 0-23, default: 18 (6pm)
+}
