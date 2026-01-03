@@ -1,15 +1,15 @@
-import { useState, useRef, useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { format, parseISO, setHours, setMinutes } from 'date-fns'
-import { X, Edit2, Trash2, Check } from 'lucide-react'
-import type { Block, BlockStatus, BlockType } from '../types'
-import { BlockCard } from './BlockCard'
+import { Check, Edit2, Trash2, X } from 'lucide-react'
 import { checkOverlap, snapToQuarterHour } from '../lib/utils'
-import { useCreateBlock, useUpdateBlock, useDeleteBlock } from '../lib/hooks'
+import { useCreateBlock, useDeleteBlock, useUpdateBlock } from '../lib/hooks'
+import { BlockCard } from './BlockCard'
+import type { Block, BlockStatus, BlockType } from '../types'
 
 interface TimelineProps {
   dayId: string
   date: string
-  blocks: Block[]
+  blocks: Array<Block>
 }
 
 const HOURS = Array.from({ length: 24 }, (_, i) => i)

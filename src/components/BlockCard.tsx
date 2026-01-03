@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { format, parseISO } from 'date-fns'
-import { Clock, GripVertical, AlertTriangle } from 'lucide-react'
+import { AlertTriangle, Clock, GripVertical } from 'lucide-react'
 import type { Block } from '../types'
 
 interface BlockCardProps {
