@@ -136,7 +136,7 @@ export function BlockCard({
           className="px-3 py-2 h-full flex flex-col"
           style={{ color: textColor }}
         >
-          {/* Header */}
+          {/* Header with title and time on same line */}
           <div className="flex items-start gap-2 mb-1">
             {/* Drag handle */}
             <button
@@ -158,7 +158,23 @@ export function BlockCard({
 
             {/* Title and content */}
             <div className="flex-1 min-w-0">
-              <div className="font-medium text-sm truncate">{block.title}</div>
+              {/* Title and time on same line */}
+              <div className="flex items-center gap-2 mb-0.5">
+                <div className="font-medium text-sm truncate flex-1">
+                  {block.title}
+                </div>
+                <div className="flex items-center gap-1 text-xs opacity-75 whitespace-nowrap flex-shrink-0">
+                  <Clock size={12} />
+                  <span>{formatCompactTime(block.start, block.end)}</span>
+                </div>
+                {hasOverlap && (
+                  <AlertTriangle
+                    size={12}
+                    className="text-orange-500 flex-shrink-0"
+                    aria-label="Overlapping with another block"
+                  />
+                )}
+              </div>
               {block.notes && (
                 <div className="text-xs opacity-90 line-clamp-2 mt-0.5">
                   {block.notes}
@@ -182,22 +198,6 @@ export function BlockCard({
                 </div>
               )}
             </div>
-          </div>
-
-          {/* Time display */}
-          <div className="flex items-center gap-1 text-xs opacity-75 mt-auto">
-            <Clock size={12} />
-            <span>
-              {format(parseISO(block.start), 'h:mm a')} -{' '}
-              {format(parseISO(block.end), 'h:mm a')}
-            </span>
-            {hasOverlap && (
-              <AlertTriangle
-                size={12}
-                className="ml-auto text-orange-500"
-                aria-label="Overlapping with another block"
-              />
-            )}
           </div>
         </div>
       )}
