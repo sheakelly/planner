@@ -74,7 +74,7 @@ export function BlockCard({
     <div
       ref={cardRef}
       data-block
-      className={`relative mx-2 rounded-lg border-2 transition-all ${
+      className={`absolute rounded-lg border-2 transition-all ${
         STATUS_COLORS[block.status]
       } ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''} ${
         hasOverlap ? 'ring-2 ring-orange-500' : ''
