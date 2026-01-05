@@ -74,3 +74,84 @@ export function findOverlappingBlocks(
     return start1 < end2 && start2 < end1
   })
 }
+
+export interface BlockLayout {
+  block: Block
+  column: number
+  totalColumns: number
+}
+
+/**
+ * Calculate column positions for overlapping blocks
+ * Uses a greedy algorithm to minimize the number of columns needed
+ */
+export function calculateBlockLayout(
+  blocks: Block[],
+): Map<string, BlockLayout> {
+  const layout = new Map<string, BlockLayout>()
+
+  // Sort blocks by start time, then by duration (longer first)
+  const sortedBlocks = [...blocks].sort((a, b) => {
+    const startA = parseISO(a.start).getTime()
+    const startB = parseISO(b.start).getTime()
+    if (startA !== startB) return startA - startB
+
+    // If start times are equal, longer blocks first
+    return b.duration - a.duration
+  })
+
+  // Track which columns are occupied at each time point
+  const columns: Array<{ block: Block; end: Date }> = []
+
+  for (const block of sortedBlocks) {
+    const start = parseISO(block.start)
+    const end = parseISO(block.end)
+
+    // Remove columns that have ended before this block starts
+    const activeColumns = columns.filter((col) => col.end > start)
+
+    // Find the first available column
+    let column = 0
+    const usedColumns = new Set(
+      activeColumns.map((col) => {
+        const colLayout = layout.get(col.block.id)
+        return colLayout?.column ?? 0
+      }),
+    )
+
+    while (usedColumns.has(column)) {
+      column++
+    }
+
+    // Place block in this column
+    columns.push({ block, end })
+
+    // Calculate total columns for all overlapping blocks
+    const overlappingBlocks = sortedBlocks.filter(
+      (b) => checkOverlap(block, b) || b.id === block.id,
+    )
+    const totalColumns = Math.max(
+      column + 1,
+      ...overlappingBlocks.map((b) => {
+        const existingLayout = layout.get(b.id)
+        return existingLayout ? existingLayout.column + 1 : 1
+      }),
+    )
+
+    // Set layout for this block
+    layout.set(block.id, { block, column, totalColumns })
+
+    // Update totalColumns for all overlapping blocks
+    overlappingBlocks.forEach((b) => {
+      const existingLayout = layout.get(b.id)
+      if (existingLayout && existingLayout.totalColumns < totalColumns) {
+        layout.set(b.id, {
+          ...existingLayout,
+          totalColumns,
+        })
+      }
+    })
+  }
+
+  return layout
+}

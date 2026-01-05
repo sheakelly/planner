@@ -1,7 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
 import { format, parseISO, setHours, setMinutes } from 'date-fns'
 import { Check, Edit2, Settings, Trash2, X } from 'lucide-react'
-import { checkOverlap, snapToQuarterHour } from '../lib/utils'
+import {
+  checkOverlap,
+  snapToQuarterHour,
+  calculateBlockLayout,
+} from '../lib/utils'
 import {
   useCreateBlock,
   useDeleteBlock,
@@ -73,6 +77,9 @@ export function Timeline({
   const deleteBlock = useDeleteBlock()
   const updatePreferences = useUpdatePreferences()
 
+  // Calculate block layout (columns for overlapping blocks)
+  const blockLayout = useMemo(() => calculateBlockLayout(blocks), [blocks])
+
   // Calculate block position and height based on time
   const getBlockStyle = (block: Block) => {
     const start = parseISO(block.start)
@@ -86,7 +93,23 @@ export function Timeline({
     const top = ((startMinutes - offsetMinutes) / 60) * SLOT_HEIGHT
     const height = (durationMinutes / 60) * SLOT_HEIGHT
 
-    return { top, height }
+    // Get layout info for this block
+    const layout = blockLayout.get(block.id)
+
+    if (layout && layout.totalColumns > 1) {
+      // Calculate width and left position for overlapping blocks
+      const widthPercent = 100 / layout.totalColumns
+      const leftPercent = widthPercent * layout.column
+
+      return {
+        top,
+        height,
+        width: `${widthPercent}%`,
+        left: `${leftPercent}%`,
+      }
+    }
+
+    return { top, height, width: '100%', left: '0%' }
   }
 
   // Check for overlapping blocks
@@ -667,8 +690,8 @@ export function Timeline({
                       position: 'absolute',
                       top: `${style.top}px`,
                       height: `${style.height}px`,
-                      left: '0',
-                      right: '0',
+                      left: style.left,
+                      width: style.width,
                     }}
                     isSelected={selectedBlock?.id === block.id}
                     hasOverlap={hasOverlap}
