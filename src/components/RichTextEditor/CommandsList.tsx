@@ -1,14 +1,14 @@
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useState,
-  useCallback,
 } from 'react'
 import type { SlashCommand } from './slashCommands'
 
 export type CommandsListProps = {
-  items: SlashCommand[]
+  items: Array<SlashCommand>
   command: (item: SlashCommand) => void
 }
 
@@ -22,7 +22,7 @@ export const CommandsList = forwardRef<CommandsListRef, CommandsListProps>(
 
     const selectItem = useCallback(
       (index: number) => {
-        const item = items[index]
+        const item = items[index] as SlashCommand | undefined
         if (item) {
           command(item)
         }

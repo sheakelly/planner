@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useRef } from 'react'
-import { EditorContent, useEditor, ReactRenderer } from '@tiptap/react'
+import { EditorContent, ReactRenderer, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import tippy from 'tippy.js'
-import type { Instance as TippyInstance } from 'tippy.js'
 import {
   Bold,
   CheckSquare,
@@ -15,9 +14,10 @@ import {
   List,
   ListOrdered,
 } from 'lucide-react'
-import type { JSONContent } from '@tiptap/core'
 import { SlashCommands, filterCommands } from './slashCommands'
 import { CommandsList } from './CommandsList'
+import type { JSONContent } from '@tiptap/core'
+import type { Instance as TippyInstance } from 'tippy.js'
 import type { CommandsListRef } from './CommandsList'
 
 export type RichTextEditorProps = {
@@ -58,7 +58,7 @@ export function RichTextEditor({
           items: ({ query }: { query: string }) => filterCommands(query),
           render: () => {
             let component: ReactRenderer<CommandsListRef> | null = null
-            let popup: TippyInstance[] | null = null
+            let popup: Array<TippyInstance> | null = null
 
             return {
               onStart: (props) => {

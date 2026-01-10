@@ -1,19 +1,19 @@
 import { Extension } from '@tiptap/core'
 import Suggestion from '@tiptap/suggestion'
-import type { Editor, Range } from '@tiptap/core'
-import type { SuggestionOptions } from '@tiptap/suggestion'
 import {
   CheckSquare,
+  Code,
   Heading1,
   Heading2,
   Heading3,
   List,
   ListOrdered,
-  Text,
-  Quote,
-  Code,
   Minus,
+  Quote,
+  Text,
 } from 'lucide-react'
+import type { Editor, Range } from '@tiptap/core'
+import type { SuggestionOptions } from '@tiptap/suggestion'
 import type { LucideIcon } from 'lucide-react'
 
 export type SlashCommand = {
@@ -21,10 +21,10 @@ export type SlashCommand = {
   description: string
   icon: LucideIcon
   command: (props: { editor: Editor; range: Range }) => void
-  aliases?: string[]
+  aliases?: Array<string>
 }
 
-export const slashCommands: SlashCommand[] = [
+export const slashCommands: Array<SlashCommand> = [
   {
     title: 'Text',
     description: 'Plain text paragraph',
@@ -153,7 +153,7 @@ export const SlashCommands = Extension.create<SlashCommandsOptions>({
   },
 })
 
-export function filterCommands(query: string): SlashCommand[] {
+export function filterCommands(query: string): Array<SlashCommand> {
   const lowerQuery = query.toLowerCase()
 
   return slashCommands.filter((command) => {
