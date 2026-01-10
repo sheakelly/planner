@@ -1,13 +1,13 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import {
+  GripVertical,
+  Maximize2,
+  Minimize2,
   Pause,
   Play,
   RotateCcw,
-  Minimize2,
-  Maximize2,
-  GripVertical,
-  X,
   Timer,
+  X,
 } from 'lucide-react'
 
 interface PomodoroTimerProps {
@@ -44,18 +44,18 @@ export function InlineTimer({
   return (
     <button
       onClick={onClick}
-      className="flex items-center gap-2 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors"
+      className="flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-1.5 transition-colors hover:bg-slate-200"
       aria-label="Open focus timer"
     >
       <Timer
         size={16}
         className={isRunning ? 'text-blue-600' : 'text-slate-600'}
       />
-      <span className="text-sm font-medium tabular-nums text-slate-900">
+      <span className="text-sm font-medium text-slate-900 tabular-nums">
         {formatTime(timeLeft)}
       </span>
       {isRunning && (
-        <span className="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
+        <span className="h-2 w-2 animate-pulse rounded-full bg-blue-600" />
       )}
     </button>
   )
@@ -187,7 +187,7 @@ export function PomodoroTimer({
     return (
       <div
         ref={timerRef}
-        className="fixed bg-white rounded-lg shadow-lg border border-slate-200 z-50"
+        className="fixed z-50 rounded-lg border border-slate-200 bg-white shadow-lg"
         style={{
           left: `${position.x}px`,
           top: `${position.y}px`,
@@ -196,7 +196,7 @@ export function PomodoroTimer({
       >
         {/* Drag handle */}
         <div
-          className="flex items-center justify-between p-3 border-b border-slate-200 cursor-move bg-slate-50 rounded-t-lg select-none"
+          className="flex cursor-move items-center justify-between rounded-t-lg border-b border-slate-200 bg-slate-50 p-3 select-none"
           onMouseDown={handleMouseDown}
         >
           <div className="flex items-center gap-2">
@@ -208,7 +208,7 @@ export function PomodoroTimer({
           <div className="flex items-center gap-1">
             <button
               onClick={() => setIsMinimized(!isMinimized)}
-              className="p-1 hover:bg-slate-200 rounded transition-colors"
+              className="rounded p-1 transition-colors hover:bg-slate-200"
               aria-label={isMinimized ? 'Expand' : 'Minimize'}
             >
               {isMinimized ? <Maximize2 size={16} /> : <Minimize2 size={16} />}
@@ -218,7 +218,7 @@ export function PomodoroTimer({
                 e.stopPropagation()
                 onClose?.()
               }}
-              className="p-1 hover:bg-slate-200 rounded transition-colors"
+              className="rounded p-1 transition-colors hover:bg-slate-200"
               aria-label="Close timer"
             >
               <X size={16} />
@@ -232,8 +232,8 @@ export function PomodoroTimer({
             {/* Compact timer display */}
             <div className="relative mb-4">
               {/* Progress ring - smaller */}
-              <div className="relative w-32 h-32 mx-auto">
-                <svg className="w-full h-full transform -rotate-90">
+              <div className="relative mx-auto h-32 w-32">
+                <svg className="h-full w-full -rotate-90 transform">
                   {/* Background circle */}
                   <circle
                     cx="64"
@@ -267,7 +267,7 @@ export function PomodoroTimer({
                     <div className="text-2xl font-bold text-slate-900 tabular-nums">
                       {formatTime(timeLeft)}
                     </div>
-                    <div className="text-xs text-slate-500 mt-0.5">
+                    <div className="mt-0.5 text-xs text-slate-500">
                       {timeLeft === 0 ? 'Done!' : isRunning ? 'Focus' : 'Ready'}
                     </div>
                   </div>
@@ -281,7 +281,7 @@ export function PomodoroTimer({
                 <button
                   onClick={onStart}
                   disabled={timeLeft === 0}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors"
+                  className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
                   aria-label="Start timer"
                 >
                   <Play size={16} />
@@ -290,7 +290,7 @@ export function PomodoroTimer({
               ) : (
                 <button
                   onClick={onPause}
-                  className="flex items-center gap-1.5 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm font-medium transition-colors"
+                  className="flex items-center gap-1.5 rounded-lg bg-yellow-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-yellow-700"
                   aria-label="Pause timer"
                 >
                   <Pause size={16} />
@@ -299,7 +299,7 @@ export function PomodoroTimer({
               )}
               <button
                 onClick={onReset}
-                className="flex items-center gap-1.5 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm font-medium transition-colors"
+                className="flex items-center gap-1.5 rounded-lg bg-slate-200 px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-300"
                 aria-label="Reset timer"
               >
                 <RotateCcw size={16} />
@@ -326,12 +326,12 @@ export function PomodoroTimer({
 
   // Mobile: Fixed bottom bar
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-lg z-50">
+    <div className="fixed right-0 bottom-0 left-0 z-50 border-t border-slate-200 bg-white shadow-lg">
       {/* Collapsed state - just a button to expand */}
       {isCollapsed ? (
         <button
           onClick={() => setIsCollapsed(false)}
-          className="w-full p-3 flex items-center justify-center gap-2 text-slate-700 hover:bg-slate-50 transition-colors"
+          className="flex w-full items-center justify-center gap-2 p-3 text-slate-700 transition-colors hover:bg-slate-50"
         >
           <Play size={16} className={isRunning ? 'text-blue-500' : ''} />
           <span className="text-sm font-medium tabular-nums">
@@ -344,8 +344,8 @@ export function PomodoroTimer({
           {/* Mobile timer layout - horizontal */}
           <div className="flex items-center justify-between gap-3">
             {/* Compact ring */}
-            <div className="relative w-16 h-16 flex-shrink-0">
-              <svg className="w-full h-full transform -rotate-90">
+            <div className="relative h-16 w-16 flex-shrink-0">
+              <svg className="h-full w-full -rotate-90 transform">
                 <circle
                   cx="32"
                   cy="32"
@@ -378,12 +378,12 @@ export function PomodoroTimer({
             </div>
 
             {/* Controls */}
-            <div className="flex items-center gap-2 flex-1">
+            <div className="flex flex-1 items-center gap-2">
               {!isRunning ? (
                 <button
                   onClick={onStart}
                   disabled={timeLeft === 0}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-lg text-sm font-medium transition-colors flex-1"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-300"
                   aria-label="Start timer"
                 >
                   <Play size={16} />
@@ -392,7 +392,7 @@ export function PomodoroTimer({
               ) : (
                 <button
                   onClick={onPause}
-                  className="flex items-center justify-center gap-1.5 px-4 py-2 bg-yellow-600 hover:bg-yellow-700 text-white rounded-lg text-sm font-medium transition-colors flex-1"
+                  className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-yellow-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-yellow-700"
                   aria-label="Pause timer"
                 >
                   <Pause size={16} />
@@ -401,7 +401,7 @@ export function PomodoroTimer({
               )}
               <button
                 onClick={onReset}
-                className="flex items-center justify-center gap-1.5 px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-sm font-medium transition-colors"
+                className="flex items-center justify-center gap-1.5 rounded-lg bg-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-300"
                 aria-label="Reset timer"
               >
                 <RotateCcw size={16} />
@@ -409,17 +409,17 @@ export function PomodoroTimer({
             </div>
 
             {/* Collapse and Close buttons */}
-            <div className="flex items-center gap-1 flex-shrink-0">
+            <div className="flex flex-shrink-0 items-center gap-1">
               <button
                 onClick={() => setIsCollapsed(true)}
-                className="p-2 hover:bg-slate-100 rounded transition-colors"
+                className="rounded p-2 transition-colors hover:bg-slate-100"
                 aria-label="Collapse timer"
               >
                 <Minimize2 size={16} className="text-slate-600" />
               </button>
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-slate-100 rounded transition-colors"
+                className="rounded p-2 transition-colors hover:bg-slate-100"
                 aria-label="Close timer"
               >
                 <X size={16} className="text-slate-600" />

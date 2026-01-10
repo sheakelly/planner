@@ -1,5 +1,6 @@
-import { createContext, useContext, ReactNode } from 'react'
+import { createContext, useContext } from 'react'
 import { useTimerState } from '../hooks/useTimerState'
+import type { ReactNode } from 'react'
 
 type TimerContextType = ReturnType<typeof useTimerState>
 

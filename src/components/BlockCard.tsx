@@ -27,18 +27,18 @@ const STATUS_COLORS = {
 }
 
 const TYPE_COLORS = {
-  'deep-work': '#9333ea', // purple-600
-  admin: '#3b82f6', // blue-500
-  meeting: '#22c55e', // green-500
-  break: '#f97316', // orange-500
+  'deep-work': '#7c3aed', // violet-600 (valuable)
+  admin: '#78716c', // stone-500 (chore)
+  meeting: '#6b7280', // gray-500 (dull)
+  break: '#10b981', // emerald-500 (relief)
   other: '#64748b', // slate-500
 }
 
 const TYPE_INDICATORS = {
-  'deep-work': 'bg-purple-500',
-  admin: 'bg-blue-500',
-  meeting: 'bg-green-500',
-  break: 'bg-orange-500',
+  'deep-work': 'bg-violet-500',
+  admin: 'bg-stone-500',
+  meeting: 'bg-gray-500',
+  break: 'bg-emerald-500',
   other: 'bg-slate-500',
 }
 
@@ -95,7 +95,7 @@ export function BlockCard({
     >
       {/* Resize handle - top */}
       <div
-        className={`absolute top-0 left-0 right-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
+        className={`absolute top-0 right-0 left-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
           isCondensed ? 'h-1' : 'h-2'
         }`}
         onMouseDown={(e) => {
@@ -109,7 +109,7 @@ export function BlockCard({
         aria-orientation="horizontal"
       >
         {!isCondensed && !isPast && (
-          <div className="w-8 h-0.5 bg-white/40 rounded" />
+          <div className="h-0.5 w-8 rounded bg-white/40" />
         )}
       </div>
 
@@ -117,7 +117,7 @@ export function BlockCard({
       {isCondensed ? (
         /* Condensed horizontal layout for blocks ≤30min */
         <div
-          className="px-2 py-1 h-full flex items-center gap-2"
+          className="flex h-full items-center gap-2 px-2 py-1"
           style={{ color: textColor }}
         >
           {/* Drag handle */}
@@ -138,26 +138,26 @@ export function BlockCard({
           </button>
 
           {/* Title */}
-          <div className="flex-1 min-w-0 text-xs font-medium truncate">
+          <div className="min-w-0 flex-1 truncate text-xs font-medium">
             {block.title}
           </div>
 
           {/* Compact time */}
-          <div className="text-xs opacity-75 whitespace-nowrap">
+          <div className="text-xs whitespace-nowrap opacity-75">
             {formatCompactTime(block.start, block.end)}
           </div>
         </div>
       ) : (
         /* Full vertical layout for blocks >30min */
         <div
-          className="px-3 py-2 h-full flex flex-col"
+          className="flex h-full flex-col px-3 py-2"
           style={{ color: textColor }}
         >
           {/* Header with title and time on same line */}
-          <div className="flex items-start gap-2 mb-1">
+          <div className="mb-1 flex items-start gap-2">
             {/* Drag handle */}
             <button
-              className={`flex-shrink-0 ${isPast ? 'cursor-not-allowed opacity-50' : 'cursor-move hover:bg-white/20'} rounded p-0.5 -ml-1`}
+              className={`flex-shrink-0 ${isPast ? 'cursor-not-allowed opacity-50' : 'cursor-move hover:bg-white/20'} -ml-1 rounded p-0.5`}
               onMouseDown={(e) => {
                 e.stopPropagation()
                 if (!isPast) {
@@ -174,53 +174,53 @@ export function BlockCard({
 
             {/* Type indicator */}
             <div
-              className={`flex-shrink-0 w-1 h-full rounded-full ${TYPE_INDICATORS[block.type]}`}
+              className={`h-full w-1 flex-shrink-0 rounded-full ${TYPE_INDICATORS[block.type]}`}
               aria-label={`Type: ${block.type}`}
             />
 
             {/* Title and content */}
-            <div className="flex-1 min-w-0">
+            <div className="min-w-0 flex-1">
               {/* Title and time on same line */}
-              <div className="flex items-center gap-2 mb-0.5">
-                <div className="font-medium text-sm truncate flex-1">
+              <div className="mb-0.5 flex items-center gap-2">
+                <div className="flex-1 truncate text-sm font-medium">
                   {block.title}
                 </div>
-                <div className="flex items-center gap-1 text-xs opacity-75 whitespace-nowrap flex-shrink-0">
+                <div className="flex flex-shrink-0 items-center gap-1 text-xs whitespace-nowrap opacity-75">
                   <Clock size={12} />
                   <span>{formatCompactTime(block.start, block.end)}</span>
                 </div>
                 {hasOverlap && (
                   <AlertTriangle
                     size={12}
-                    className="text-orange-500 flex-shrink-0"
+                    className="flex-shrink-0 text-orange-500"
                     aria-label="Overlapping with another block"
                   />
                 )}
                 {isOutsideHours && (
                   <AlertTriangle
                     size={12}
-                    className="text-yellow-400 flex-shrink-0"
+                    className="flex-shrink-0 text-yellow-400"
                     aria-label="Outside configured hours"
                   />
                 )}
               </div>
               {block.notes && (
-                <div className="text-xs opacity-90 line-clamp-2 mt-0.5">
+                <div className="mt-0.5 line-clamp-2 text-xs opacity-90">
                   {block.notes}
                 </div>
               )}
               {block.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1 mt-1">
+                <div className="mt-1 flex flex-wrap gap-1">
                   {block.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
-                      className="inline-block px-1.5 py-0.5 bg-white/30 rounded text-xs"
+                      className="inline-block rounded bg-white/30 px-1.5 py-0.5 text-xs"
                     >
                       {tag}
                     </span>
                   ))}
                   {block.tags.length > 3 && (
-                    <span className="inline-block px-1.5 py-0.5 bg-white/30 rounded text-xs">
+                    <span className="inline-block rounded bg-white/30 px-1.5 py-0.5 text-xs">
                       +{block.tags.length - 3}
                     </span>
                   )}
@@ -233,7 +233,7 @@ export function BlockCard({
 
       {/* Resize handle - bottom */}
       <div
-        className={`absolute bottom-0 left-0 right-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
+        className={`absolute right-0 bottom-0 left-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
           isCondensed ? 'h-1' : 'h-2'
         }`}
         onMouseDown={(e) => {
@@ -249,7 +249,7 @@ export function BlockCard({
         aria-orientation="horizontal"
       >
         {!isCondensed && !isPast && (
-          <div className="w-8 h-0.5 bg-white/40 rounded" />
+          <div className="h-0.5 w-8 rounded bg-white/40" />
         )}
       </div>
     </div>

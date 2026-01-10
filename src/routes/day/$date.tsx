@@ -62,7 +62,7 @@ function DayView() {
 
   if (isLoading || blocksLoading || prefsLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="text-slate-600">Loading...</div>
       </div>
     )
@@ -70,7 +70,7 @@ function DayView() {
 
   if (!day) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center bg-slate-50">
         <div className="text-slate-600">Creating day...</div>
       </div>
     )
@@ -82,13 +82,13 @@ function DayView() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page header */}
-        <div className="mb-8">
+        <div className="mb-3">
           <div className="flex items-center justify-between gap-4">
             <button
               onClick={navigateToPreviousDay}
-              className="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+              className="flex items-center gap-2 rounded-md px-4 py-2 text-slate-700 transition-colors hover:bg-slate-100"
               aria-label="Previous day"
             >
               <ChevronLeft size={20} />
@@ -96,7 +96,7 @@ function DayView() {
             </button>
 
             <div className="flex-1 text-center">
-              <h1 className="text-3xl font-bold text-slate-900 mb-2">
+              <h1 className="mb-2 text-3xl font-bold text-slate-900">
                 {formattedDate}
               </h1>
               <p className="text-slate-600">Plan your day with time blocks</p>
@@ -104,7 +104,7 @@ function DayView() {
 
             <button
               onClick={navigateToNextDay}
-              className="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+              className="flex items-center gap-2 rounded-md px-4 py-2 text-slate-700 transition-colors hover:bg-slate-100"
               aria-label="Next day"
             >
               <span className="hidden sm:inline">Next</span>
@@ -127,38 +127,38 @@ function DayView() {
           </div>
 
           {/* Keyboard shortcuts help - below timeline on mobile/tablet */}
-          <div className="lg:hidden bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">
+          <div className="rounded-lg bg-white p-6 shadow lg:hidden">
+            <h3 className="mb-4 text-lg font-semibold text-slate-900">
               Keyboard Shortcuts
             </h3>
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-slate-600">Move block up/down</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-slate-700 font-mono text-xs">
+                <kbd className="rounded bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
                   ↑/↓
                 </kbd>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Resize block</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-slate-700 font-mono text-xs">
+                <kbd className="rounded bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
                   ←/→
                 </kbd>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Move by 1 hour</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-slate-700 font-mono text-xs">
+                <kbd className="rounded bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
                   Shift + ↑/↓
                 </kbd>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Delete block</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-slate-700 font-mono text-xs">
+                <kbd className="rounded bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
                   Del
                 </kbd>
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-600">Deselect</span>
-                <kbd className="px-2 py-1 bg-slate-100 rounded text-slate-700 font-mono text-xs">
+                <kbd className="rounded bg-slate-100 px-2 py-1 font-mono text-xs text-slate-700">
                   Esc
                 </kbd>
               </div>

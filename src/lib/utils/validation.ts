@@ -86,7 +86,7 @@ export interface BlockLayout {
  * Uses a greedy algorithm to minimize the number of columns needed
  */
 export function calculateBlockLayout(
-  blocks: Block[],
+  blocks: Array<Block>,
 ): Map<string, BlockLayout> {
   const layout = new Map<string, BlockLayout>()
 

@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { format, parseISO, setHours, setMinutes } from 'date-fns'
 import { Check, Edit2, Settings, Trash2, X } from 'lucide-react'
 import {
+  calculateBlockLayout,
   checkOverlap,
   snapToQuarterHour,
-  calculateBlockLayout,
 } from '../lib/utils'
 import {
   useCreateBlock,
@@ -617,19 +617,19 @@ export function Timeline({
   const currentTimePosition = getCurrentTimePosition()
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
+    <div className="flex flex-col gap-6 lg:flex-row">
       {/* Timeline */}
       <div className="flex-1">
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="overflow-hidden rounded-lg bg-white shadow">
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50">
+          <div className="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3">
             <div className="text-sm text-slate-600">
               Showing {format(setHours(new Date(), startHour), 'h a')} -{' '}
               {format(setHours(new Date(), endHour), 'h a')}
             </div>
             <button
               onClick={() => setShowSettings(true)}
-              className="flex items-center gap-2 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-200 rounded-md transition-colors"
+              className="flex items-center gap-2 rounded-md px-3 py-1.5 text-sm text-slate-700 transition-colors hover:bg-slate-200"
               aria-label="Timeline settings"
             >
               <Settings size={16} />
@@ -639,11 +639,11 @@ export function Timeline({
 
           <div className="flex">
             {/* Time labels */}
-            <div className="flex-shrink-0 w-16 bg-slate-50 border-r border-slate-200">
+            <div className="w-16 flex-shrink-0 border-r border-slate-200 bg-slate-50">
               {HOURS.map((hour) => (
                 <div
                   key={hour}
-                  className="h-[60px] flex items-start justify-end pr-2 pt-1 text-xs text-slate-500 border-b border-slate-200"
+                  className="flex h-[60px] items-start justify-end border-b border-slate-200 pt-1 pr-2 text-xs text-slate-500"
                 >
                   {format(setHours(new Date(), hour), 'h a')}
                 </div>
@@ -653,7 +653,7 @@ export function Timeline({
             {/* Timeline grid */}
             <div
               ref={timelineRef}
-              className="flex-1 relative bg-white cursor-pointer"
+              className="relative flex-1 cursor-pointer bg-white"
               onClick={handleTimelineClick}
               role="grid"
               aria-label="Daily timeline"
@@ -667,7 +667,7 @@ export function Timeline({
                   {Array.from({ length: QUARTER_SLOTS }, (_, i) => (
                     <div
                       key={i}
-                      className="absolute w-full h-[15px] border-b border-slate-100"
+                      className="absolute h-[15px] w-full border-b border-slate-100"
                       style={{ top: `${i * 15}px` }}
                     />
                   ))}
@@ -707,11 +707,11 @@ export function Timeline({
               {/* Current time indicator */}
               {currentTimePosition !== null && (
                 <div
-                  className="absolute left-0 right-0 z-20 pointer-events-none"
+                  className="pointer-events-none absolute right-0 left-0 z-20"
                   style={{ top: `${currentTimePosition}px` }}
                 >
                   {/* Circle indicator */}
-                  <div className="absolute left-0 w-3 h-3 -ml-1.5 -mt-1.5 bg-red-500 rounded-full border-2 border-white shadow-md" />
+                  <div className="absolute left-0 -mt-1.5 -ml-1.5 h-3 w-3 rounded-full border-2 border-white bg-red-500 shadow-md" />
                   {/* Line */}
                   <div className="h-0.5 bg-red-500 shadow-sm" />
                 </div>
@@ -733,22 +733,22 @@ export function Timeline({
         <>
           {/* Mobile overlay backdrop */}
           <div
-            className="lg:hidden fixed inset-0 bg-black/50 z-40"
+            className="fixed inset-0 z-40 bg-black/50 lg:hidden"
             onClick={handleCloseSidebar}
           />
 
           {/* Sidebar content */}
-          <div className="fixed lg:static inset-x-0 bottom-0 lg:inset-auto lg:w-80 bg-white rounded-t-lg lg:rounded-lg shadow-lg p-6 z-50 max-h-[80vh] lg:max-h-none overflow-y-auto">
+          <div className="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-lg bg-white p-6 shadow-lg lg:static lg:inset-auto lg:max-h-none lg:w-80 lg:rounded-lg">
             {editingBlock ? (
               // Edit Form
               <>
-                <div className="flex justify-between items-start mb-4">
+                <div className="mb-4 flex items-start justify-between">
                   <h3 className="text-lg font-semibold text-slate-900">
                     Edit Block
                   </h3>
                   <button
                     onClick={handleCancelEdit}
-                    className="p-1 hover:bg-slate-100 rounded"
+                    className="rounded p-1 hover:bg-slate-100"
                     aria-label="Close"
                   >
                     <X size={20} />
@@ -757,7 +757,7 @@ export function Timeline({
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
                       Title
                     </label>
                     <input
@@ -769,14 +769,14 @@ export function Timeline({
                           title: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                       placeholder="Block title"
                       autoFocus
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
                       Notes
                     </label>
                     <textarea
@@ -787,14 +787,14 @@ export function Timeline({
                           notes: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                      className="w-full resize-none rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                       placeholder="Notes (optional)"
                       rows={3}
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
                       Tags
                     </label>
                     <input
@@ -806,13 +806,13 @@ export function Timeline({
                           tags: e.target.value,
                         })
                       }
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                       placeholder="Tags (comma separated)"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
                       Status
                     </label>
                     <select
@@ -823,7 +823,7 @@ export function Timeline({
                           status: e.target.value as BlockStatus,
                         })
                       }
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="planned">Planned</option>
                       <option value="in-progress">In Progress</option>
@@ -833,7 +833,7 @@ export function Timeline({
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="mb-1 block text-sm font-medium text-slate-700">
                       Type
                     </label>
                     <select
@@ -844,7 +844,7 @@ export function Timeline({
                           type: e.target.value as BlockType,
                         })
                       }
-                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="deep-work">Deep Work</option>
                       <option value="admin">Admin</option>
@@ -858,14 +858,14 @@ export function Timeline({
                 <div className="mt-6 flex gap-2">
                   <button
                     onClick={handleSaveEdit}
-                    className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium flex items-center justify-center gap-2"
+                    className="flex flex-1 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
                   >
                     <Check size={18} />
                     Save
                   </button>
                   <button
                     onClick={handleCancelEdit}
-                    className="flex-1 px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-md font-medium"
+                    className="flex-1 rounded-md bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300"
                   >
                     Cancel
                   </button>
@@ -875,13 +875,13 @@ export function Timeline({
               // Details View
               selectedBlock && (
                 <>
-                  <div className="flex justify-between items-start mb-4">
+                  <div className="mb-4 flex items-start justify-between">
                     <h3 className="text-lg font-semibold text-slate-900">
                       Block Details
                     </h3>
                     <button
                       onClick={handleCloseSidebar}
-                      className="p-1 hover:bg-slate-100 rounded"
+                      className="rounded p-1 hover:bg-slate-100"
                       aria-label="Close"
                     >
                       <X size={20} />
@@ -890,33 +890,33 @@ export function Timeline({
 
                   <div className="space-y-3">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-slate-700">
                         Title
                       </label>
-                      <p className="text-sm text-slate-900 font-medium">
+                      <p className="text-sm font-medium text-slate-900">
                         {selectedBlock.title}
                       </p>
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-slate-700">
                         Time
                       </label>
                       <p className="text-sm text-slate-600">
                         {format(parseISO(selectedBlock.start), 'h:mm a')} -{' '}
                         {format(parseISO(selectedBlock.end), 'h:mm a')}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1">
+                      <p className="mt-1 text-xs text-slate-500">
                         {selectedBlock.duration} minutes
                       </p>
                     </div>
 
                     {selectedBlock.notes && (
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                        <label className="mb-1 block text-sm font-medium text-slate-700">
                           Notes
                         </label>
-                        <p className="text-sm text-slate-600 whitespace-pre-wrap">
+                        <p className="text-sm whitespace-pre-wrap text-slate-600">
                           {selectedBlock.notes}
                         </p>
                       </div>
@@ -924,14 +924,14 @@ export function Timeline({
 
                     {selectedBlock.tags.length > 0 && (
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">
+                        <label className="mb-1 block text-sm font-medium text-slate-700">
                           Tags
                         </label>
                         <div className="flex flex-wrap gap-2">
                           {selectedBlock.tags.map((tag) => (
                             <span
                               key={tag}
-                              className="inline-flex items-center px-2 py-1 rounded-md bg-blue-100 text-blue-700 text-xs font-medium"
+                              className="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
                             >
                               {tag}
                             </span>
@@ -941,11 +941,11 @@ export function Timeline({
                     )}
 
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-slate-700">
                         Status
                       </label>
                       <span
-                        className={`inline-flex px-2 py-1 rounded text-xs font-medium ${
+                        className={`inline-flex rounded px-2 py-1 text-xs font-medium ${
                           selectedBlock.status === 'completed'
                             ? 'bg-green-100 text-green-700'
                             : selectedBlock.status === 'in-progress'
@@ -960,19 +960,19 @@ export function Timeline({
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                      <label className="mb-1 block text-sm font-medium text-slate-700">
                         Type
                       </label>
                       <span
-                        className={`inline-flex px-2 py-1 rounded text-xs font-medium ${
+                        className={`inline-flex rounded px-2 py-1 text-xs font-medium ${
                           selectedBlock.type === 'deep-work'
-                            ? 'bg-purple-100 text-purple-700'
+                            ? 'bg-violet-100 text-violet-700'
                             : selectedBlock.type === 'admin'
-                              ? 'bg-blue-100 text-blue-700'
+                              ? 'bg-stone-100 text-stone-700'
                               : selectedBlock.type === 'meeting'
-                                ? 'bg-green-100 text-green-700'
+                                ? 'bg-gray-100 text-gray-700'
                                 : selectedBlock.type === 'break'
-                                  ? 'bg-orange-100 text-orange-700'
+                                  ? 'bg-emerald-100 text-emerald-700'
                                   : 'bg-slate-100 text-slate-700'
                         }`}
                       >
@@ -984,14 +984,14 @@ export function Timeline({
                   <div className="mt-6 flex gap-2">
                     <button
                       onClick={() => handleStartEdit(selectedBlock)}
-                      className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium flex items-center justify-center gap-2"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
                     >
                       <Edit2 size={18} />
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteBlock(selectedBlock.id)}
-                      className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md font-medium flex items-center justify-center gap-2"
+                      className="flex items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700"
                     >
                       <Trash2 size={18} />
                       Delete

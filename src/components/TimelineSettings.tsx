@@ -54,22 +54,22 @@ export function TimelineSettings({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/50 z-40"
+        className="fixed inset-0 z-40 bg-black/50"
         onClick={onClose}
         aria-hidden="true"
       />
 
       {/* Modal */}
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
+        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
           {/* Header */}
-          <div className="flex justify-between items-start mb-4">
+          <div className="mb-4 flex items-start justify-between">
             <h2 className="text-xl font-semibold text-slate-900">
               Timeline Settings
             </h2>
             <button
               onClick={onClose}
-              className="p-1 hover:bg-slate-100 rounded"
+              className="rounded p-1 hover:bg-slate-100"
               aria-label="Close"
             >
               <X size={20} />
@@ -86,7 +86,7 @@ export function TimelineSettings({
 
             {/* Start Hour */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 Start Hour
               </label>
               <select
@@ -95,7 +95,7 @@ export function TimelineSettings({
                   setLocalStartHour(parseInt(e.target.value))
                   setError(null)
                 }}
-                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               >
                 {hours.map((hour) => (
                   <option key={hour} value={hour}>
@@ -107,7 +107,7 @@ export function TimelineSettings({
 
             {/* End Hour */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="mb-2 block text-sm font-medium text-slate-700">
                 End Hour
               </label>
               <select
@@ -116,7 +116,7 @@ export function TimelineSettings({
                   setLocalEndHour(parseInt(e.target.value))
                   setError(null)
                 }}
-                className="w-full px-3 py-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               >
                 {hours.map((hour) => (
                   <option key={hour} value={hour}>
@@ -127,9 +127,9 @@ export function TimelineSettings({
             </div>
 
             {/* Preview */}
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
+            <div className="rounded-md border border-blue-200 bg-blue-50 p-3">
               <p className="text-sm font-medium text-blue-900">Preview</p>
-              <p className="text-sm text-blue-700 mt-1">
+              <p className="mt-1 text-sm text-blue-700">
                 Your timeline will show {formatHour(localStartHour)} to{' '}
                 {formatHour(localEndHour)} ({localEndHour - localStartHour}{' '}
                 hours)
@@ -138,7 +138,7 @@ export function TimelineSettings({
 
             {/* Error message */}
             {error && (
-              <div className="bg-red-50 border border-red-200 rounded-md p-3">
+              <div className="rounded-md border border-red-200 bg-red-50 p-3">
                 <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
@@ -148,19 +148,19 @@ export function TimelineSettings({
           <div className="mt-6 flex gap-2">
             <button
               onClick={handleSave}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-medium"
+              className="flex-1 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
             >
               Save
             </button>
             <button
               onClick={handleReset}
-              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-md font-medium"
+              className="rounded-md bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300"
             >
               Reset
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-md font-medium"
+              className="rounded-md bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300"
             >
               Cancel
             </button>
