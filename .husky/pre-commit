@@ -1,0 +1,5 @@
+# Type check the entire project
+pnpm exec tsc --noEmit
+
+# Run lint-staged (eslint + prettier on staged files)
+pnpm exec lint-staged
