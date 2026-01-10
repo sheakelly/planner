@@ -9,9 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WorkingMemoryRouteImport } from './routes/working-memory'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DayDateRouteImport } from './routes/day/$date'
 
+const WorkingMemoryRoute = WorkingMemoryRouteImport.update({
+  id: '/working-memory',
+  path: '/working-memory',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -25,32 +31,43 @@ const DayDateRoute = DayDateRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/working-memory': typeof WorkingMemoryRoute
   '/day/$date': typeof DayDateRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/working-memory': typeof WorkingMemoryRoute
   '/day/$date': typeof DayDateRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/working-memory': typeof WorkingMemoryRoute
   '/day/$date': typeof DayDateRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/day/$date'
+  fullPaths: '/' | '/working-memory' | '/day/$date'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/day/$date'
-  id: '__root__' | '/' | '/day/$date'
+  to: '/' | '/working-memory' | '/day/$date'
+  id: '__root__' | '/' | '/working-memory' | '/day/$date'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  WorkingMemoryRoute: typeof WorkingMemoryRoute
   DayDateRoute: typeof DayDateRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/working-memory': {
+      id: '/working-memory'
+      path: '/working-memory'
+      fullPath: '/working-memory'
+      preLoaderRoute: typeof WorkingMemoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  WorkingMemoryRoute: WorkingMemoryRoute,
   DayDateRoute: DayDateRoute,
 }
 export const routeTree = rootRouteImport

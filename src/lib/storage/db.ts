@@ -1,9 +1,9 @@
 import { openDB } from 'idb'
 import type { IDBPDatabase } from 'idb'
-import type { Block, Day, UserPreferences } from '../../types'
+import type { Block, Day, UserPreferences, WorkingMemory } from '../../types'
 
 const DB_NAME = 'planner-db'
-const DB_VERSION = 2
+const DB_VERSION = 3
 
 interface PlannerDB {
   days: {
@@ -19,6 +19,10 @@ interface PlannerDB {
   preferences: {
     key: string
     value: UserPreferences
+  }
+  workingMemory: {
+    key: string
+    value: WorkingMemory
   }
 }
 
@@ -45,6 +49,11 @@ export async function getDB(): Promise<IDBPDatabase<PlannerDB>> {
       // Preferences store (added in version 2)
       if (oldVersion < 2 && !db.objectStoreNames.contains('preferences')) {
         db.createObjectStore('preferences', { keyPath: 'id' })
+      }
+
+      // Working Memory store (added in version 3)
+      if (oldVersion < 3 && !db.objectStoreNames.contains('workingMemory')) {
+        db.createObjectStore('workingMemory', { keyPath: 'id' })
       }
     },
   })

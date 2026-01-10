@@ -1,4 +1,5 @@
 export * from './days'
 export * from './blocks'
 export * from './preferences'
+export * from './workingMemory'
 export * from './db'

@@ -39,3 +39,9 @@ export interface UserPreferences {
   startHour: number // 0-23, default: 8
   endHour: number // 0-23, default: 18 (6pm)
 }
+
+export interface WorkingMemory {
+  id: string
+  content: string // Tiptap JSON content
+  updatedAt: string // ISO 8601 timestamp
+}

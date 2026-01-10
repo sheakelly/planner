@@ -13,3 +13,85 @@ code {
   font-family:
     source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+/* Tiptap Editor Styles */
+.working-memory-editor {
+  @apply min-h-[400px] outline-none;
+}
+
+.working-memory-editor:focus {
+  @apply outline-none;
+}
+
+.working-memory-editor p {
+  @apply my-2;
+}
+
+.working-memory-editor h1 {
+  @apply my-4 text-2xl font-bold text-slate-900;
+}
+
+.working-memory-editor h2 {
+  @apply my-3 text-xl font-semibold text-slate-900;
+}
+
+.working-memory-editor h3 {
+  @apply my-2 text-lg font-medium text-slate-900;
+}
+
+.working-memory-editor ul {
+  @apply my-2 ml-6 list-disc;
+}
+
+.working-memory-editor ol {
+  @apply my-2 ml-6 list-decimal;
+}
+
+.working-memory-editor li {
+  @apply my-1;
+}
+
+.working-memory-editor ul[data-type='taskList'] {
+  @apply ml-0 list-none;
+}
+
+.working-memory-editor ul[data-type='taskList'] li {
+  @apply flex items-start gap-2;
+}
+
+.working-memory-editor ul[data-type='taskList'] li > label {
+  @apply mt-0.5 flex shrink-0 items-center;
+}
+
+.working-memory-editor
+  ul[data-type='taskList']
+  li
+  > label
+  > input[type='checkbox'] {
+  @apply h-4 w-4 cursor-pointer rounded border-slate-300;
+}
+
+.working-memory-editor ul[data-type='taskList'] li > div {
+  @apply flex-1;
+}
+
+.working-memory-editor ul[data-type='taskList'] li > div > p {
+  @apply my-0 leading-normal;
+}
+
+.working-memory-editor ul[data-type='taskList'] li[data-checked='true'] > div {
+  @apply text-slate-400 line-through;
+}
+
+.working-memory-editor strong {
+  @apply font-bold;
+}
+
+.working-memory-editor em {
+  @apply italic;
+}
+
+.working-memory-editor p.is-editor-empty:first-child::before {
+  @apply pointer-events-none float-left h-0 text-slate-400;
+  content: 'Start typing your notes...';
+}
