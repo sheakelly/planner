@@ -12,6 +12,22 @@ pnpm build            # Build for production
 pnpm preview          # Preview production build
 ```
 
+### Browser Testing with Playwright MCP
+
+**Important:** The user typically runs `pnpm dev` in a separate terminal. Do NOT start a new dev server or kill existing processes.
+
+When testing in the browser:
+
+1. **Assume the dev server is already running** on port 3001
+2. **Do NOT run `pnpm dev`** - this will conflict with the user's running server
+3. Simply navigate to `http://localhost:3001` using the browser tools
+4. If the server is not running, ask the user to start it rather than starting it yourself
+
+```bash
+# For E2E testing with a separate instance (if needed)
+PORT=3002 pnpm dev    # Start on alternate port to avoid conflicts
+```
+
 ### Testing
 
 ```bash
