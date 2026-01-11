@@ -84,33 +84,26 @@ function DayView() {
     <div className="min-h-screen bg-slate-50">
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Page header */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between gap-4">
-            <button
-              onClick={navigateToPreviousDay}
-              className="flex items-center gap-2 rounded-md px-4 py-2 text-slate-700 transition-colors hover:bg-slate-100"
-              aria-label="Previous day"
-            >
-              <ChevronLeft size={20} />
-              <span className="hidden sm:inline">Previous</span>
-            </button>
+        <div className="mb-3 flex items-center justify-between">
+          <button
+            onClick={navigateToPreviousDay}
+            className="rounded-md p-2 text-slate-700 transition-colors hover:bg-slate-100"
+            aria-label="Previous day"
+          >
+            <ChevronLeft size={20} />
+          </button>
 
-            <div className="flex-1 text-center">
-              <h1 className="mb-2 text-3xl font-bold text-slate-900">
-                {formattedDate}
-              </h1>
-              <p className="text-slate-600">Plan your day with time blocks</p>
-            </div>
+          <h1 className="text-xl font-semibold text-slate-900">
+            {formattedDate}
+          </h1>
 
-            <button
-              onClick={navigateToNextDay}
-              className="flex items-center gap-2 rounded-md px-4 py-2 text-slate-700 transition-colors hover:bg-slate-100"
-              aria-label="Next day"
-            >
-              <span className="hidden sm:inline">Next</span>
-              <ChevronRight size={20} />
-            </button>
-          </div>
+          <button
+            onClick={navigateToNextDay}
+            className="rounded-md p-2 text-slate-700 transition-colors hover:bg-slate-100"
+            aria-label="Next day"
+          >
+            <ChevronRight size={20} />
+          </button>
         </div>
 
         {/* Main content - full width now */}

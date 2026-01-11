@@ -13,6 +13,7 @@ import {
   useUpdatePreferences,
 } from '../lib/hooks'
 import { BlockCard } from './BlockCard'
+import { Button } from './Button'
 import { TimelineSettings } from './TimelineSettings'
 import type { Block, BlockStatus, BlockType } from '../types'
 
@@ -175,8 +176,9 @@ export function Timeline({
       if (!rect) return
 
       const y = e.clientY - rect.top
-      const clickedMinutes = Math.floor((y / SLOT_HEIGHT) * 60)
-      const snappedMinutes = snapToQuarterHour(clickedMinutes)
+      const clickedMinutes = (y / SLOT_HEIGHT) * 60
+      // Floor to the start of the 15-minute slot (clicking 9:00-9:14 creates block at 9:00)
+      const snappedMinutes = Math.floor(clickedMinutes / 15) * 15
 
       // Add startHour offset to get absolute minutes from midnight
       const absoluteMinutes = snappedMinutes + startHour * 60
@@ -856,19 +858,20 @@ export function Timeline({
                 </div>
 
                 <div className="mt-6 flex gap-2">
-                  <button
+                  <Button
                     onClick={handleSaveEdit}
-                    className="flex flex-1 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+                    icon={<Check size={18} />}
+                    className="flex-1"
                   >
-                    <Check size={18} />
                     Save
-                  </button>
-                  <button
+                  </Button>
+                  <Button
+                    variant="secondary"
                     onClick={handleCancelEdit}
-                    className="flex-1 rounded-md bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300"
+                    className="flex-1"
                   >
                     Cancel
-                  </button>
+                  </Button>
                 </div>
               </>
             ) : (
@@ -982,20 +985,21 @@ export function Timeline({
                   </div>
 
                   <div className="mt-6 flex gap-2">
-                    <button
+                    <Button
                       onClick={() => handleStartEdit(selectedBlock)}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
+                      icon={<Edit2 size={18} />}
+                      className="w-1/2"
                     >
-                      <Edit2 size={18} />
                       Edit
-                    </button>
-                    <button
+                    </Button>
+                    <Button
+                      variant="danger"
                       onClick={() => handleDeleteBlock(selectedBlock.id)}
-                      className="flex items-center justify-center gap-2 rounded-md bg-red-600 px-4 py-2 font-medium text-white hover:bg-red-700"
+                      icon={<Trash2 size={18} />}
+                      className="w-1/2"
                     >
-                      <Trash2 size={18} />
                       Delete
-                    </button>
+                    </Button>
                   </div>
                 </>
               )

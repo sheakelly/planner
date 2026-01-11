@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
+import { Button } from './Button'
 
 interface TimelineSettingsProps {
   startHour: number
@@ -146,24 +147,15 @@ export function TimelineSettings({
 
           {/* Actions */}
           <div className="mt-6 flex gap-2">
-            <button
-              onClick={handleSave}
-              className="flex-1 rounded-md bg-blue-600 px-4 py-2 font-medium text-white hover:bg-blue-700"
-            >
+            <Button onClick={handleSave} className="flex-1">
               Save
-            </button>
-            <button
-              onClick={handleReset}
-              className="rounded-md bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300"
-            >
+            </Button>
+            <Button variant="secondary" onClick={handleReset}>
               Reset
-            </button>
-            <button
-              onClick={onClose}
-              className="rounded-md bg-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-300"
-            >
+            </Button>
+            <Button variant="secondary" onClick={onClose}>
               Cancel
-            </button>
+            </Button>
           </div>
         </div>
       </div>

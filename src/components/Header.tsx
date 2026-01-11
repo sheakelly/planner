@@ -1,5 +1,5 @@
 import { Link, useRouterState } from '@tanstack/react-router'
-import { Brain, Calendar } from 'lucide-react'
+import { Brain, Calendar, Clock } from 'lucide-react'
 import { useTimer } from '../lib/context/TimerContext'
 import { InlineTimer } from './PomodoroTimer'
 
@@ -31,7 +31,7 @@ export default function Header() {
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
-                <Calendar size={20} className="text-blue-600" />
+                <Clock size={20} className="text-blue-600" />
                 <span className="hidden sm:inline">Timeline</span>
               </Link>
               <Link
