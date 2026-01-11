@@ -3,6 +3,7 @@ import {
   useCallback,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from 'react'
 import type { SlashCommand } from './slashCommands'
@@ -19,6 +20,7 @@ export type CommandsListRef = {
 export const CommandsList = forwardRef<CommandsListRef, CommandsListProps>(
   ({ items, command }, ref) => {
     const [selectedIndex, setSelectedIndex] = useState(0)
+    const itemRefs = useRef<Map<number, HTMLButtonElement>>(new Map())
 
     const selectItem = useCallback(
       (index: number) => {
@@ -45,6 +47,14 @@ export const CommandsList = forwardRef<CommandsListRef, CommandsListProps>(
     useEffect(() => {
       setSelectedIndex(0)
     }, [items])
+
+    // Scroll selected item into view
+    useEffect(() => {
+      const selectedElement = itemRefs.current.get(selectedIndex)
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ block: 'nearest' })
+      }
+    }, [selectedIndex])
 
     useImperativeHandle(ref, () => ({
       onKeyDown: ({ event }: { event: KeyboardEvent }) => {
@@ -82,6 +92,13 @@ export const CommandsList = forwardRef<CommandsListRef, CommandsListProps>(
           return (
             <button
               key={item.title}
+              ref={(el) => {
+                if (el) {
+                  itemRefs.current.set(index, el)
+                } else {
+                  itemRefs.current.delete(index)
+                }
+              }}
               onClick={() => selectItem(index)}
               className={`slash-commands-item ${
                 index === selectedIndex ? 'is-selected' : ''
