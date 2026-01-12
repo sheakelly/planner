@@ -61,9 +61,7 @@ export function BlockCard({
 
   const handleCardClick = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!isPast) {
-      onSelect()
-    }
+    onSelect()
   }
 
   const formatCompactTime = (start: string, end: string) => {
@@ -78,7 +76,7 @@ export function BlockCard({
         STATUS_COLORS[block.status]
       } ${isSelected ? 'ring-2 ring-blue-500 ring-offset-2' : ''} ${
         hasOverlap ? 'ring-2 ring-orange-500' : ''
-      } ${isPast ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+      } cursor-pointer`}
       style={{
         ...style,
         backgroundColor,
@@ -89,28 +87,23 @@ export function BlockCard({
       onClick={handleCardClick}
       role="button"
       tabIndex={0}
-      aria-label={`Time block: ${block.title}${isPast ? ' (read-only)' : ''}`}
+      aria-label={`Time block: ${block.title}`}
       aria-selected={isSelected}
-      aria-disabled={isPast}
     >
       {/* Resize handle - top */}
       <div
-        className={`absolute top-0 right-0 left-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
+        className={`absolute top-0 right-0 left-0 flex cursor-ns-resize items-center justify-center hover:bg-white/20 ${
           isCondensed ? 'h-1' : 'h-2'
         }`}
         onMouseDown={(e) => {
           e.stopPropagation()
-          if (!isPast) {
-            onResizeStart(block, 'top', e)
-          }
+          onResizeStart(block, 'top', e)
         }}
         role="separator"
-        aria-label={isPast ? 'Past block (read-only)' : 'Resize block from top'}
+        aria-label="Resize block from top"
         aria-orientation="horizontal"
       >
-        {!isCondensed && !isPast && (
-          <div className="h-0.5 w-8 rounded bg-white/40" />
-        )}
+        {!isCondensed && <div className="h-0.5 w-8 rounded bg-white/40" />}
       </div>
 
       {/* Content */}
@@ -122,17 +115,12 @@ export function BlockCard({
         >
           {/* Drag handle */}
           <button
-            className={`flex-shrink-0 ${isPast ? 'cursor-not-allowed opacity-50' : 'cursor-move hover:bg-white/20'} rounded p-0.5`}
+            className="flex-shrink-0 cursor-move rounded p-0.5 hover:bg-white/20"
             onMouseDown={(e) => {
               e.stopPropagation()
-              if (!isPast) {
-                onDragStart(block, e)
-              }
+              onDragStart(block, e)
             }}
-            aria-label={
-              isPast ? 'Past block (read-only)' : 'Drag to move block'
-            }
-            disabled={isPast}
+            aria-label="Drag to move block"
           >
             <GripVertical size={10} />
           </button>
@@ -157,17 +145,12 @@ export function BlockCard({
           <div className="mb-1 flex items-start gap-2">
             {/* Drag handle */}
             <button
-              className={`flex-shrink-0 ${isPast ? 'cursor-not-allowed opacity-50' : 'cursor-move hover:bg-white/20'} -ml-1 rounded p-0.5`}
+              className="-ml-1 flex-shrink-0 cursor-move rounded p-0.5 hover:bg-white/20"
               onMouseDown={(e) => {
                 e.stopPropagation()
-                if (!isPast) {
-                  onDragStart(block, e)
-                }
+                onDragStart(block, e)
               }}
-              aria-label={
-                isPast ? 'Past block (read-only)' : 'Drag to move block'
-              }
-              disabled={isPast}
+              aria-label="Drag to move block"
             >
               <GripVertical size={14} />
             </button>
@@ -233,24 +216,18 @@ export function BlockCard({
 
       {/* Resize handle - bottom */}
       <div
-        className={`absolute right-0 bottom-0 left-0 ${isPast ? 'cursor-not-allowed' : 'cursor-ns-resize hover:bg-white/20'} flex items-center justify-center ${
+        className={`absolute right-0 bottom-0 left-0 flex cursor-ns-resize items-center justify-center hover:bg-white/20 ${
           isCondensed ? 'h-1' : 'h-2'
         }`}
         onMouseDown={(e) => {
           e.stopPropagation()
-          if (!isPast) {
-            onResizeStart(block, 'bottom', e)
-          }
+          onResizeStart(block, 'bottom', e)
         }}
         role="separator"
-        aria-label={
-          isPast ? 'Past block (read-only)' : 'Resize block from bottom'
-        }
+        aria-label="Resize block from bottom"
         aria-orientation="horizontal"
       >
-        {!isCondensed && !isPast && (
-          <div className="h-0.5 w-8 rounded bg-white/40" />
-        )}
+        {!isCondensed && <div className="h-0.5 w-8 rounded bg-white/40" />}
       </div>
     </div>
   )

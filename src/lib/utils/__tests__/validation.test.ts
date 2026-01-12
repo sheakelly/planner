@@ -3,6 +3,7 @@ import {
   calculateDuration,
   checkOverlap,
   findOverlappingBlocks,
+  formatDuration,
   snapToQuarterHour,
   snapToSlot,
   validateBlockTimes,
@@ -355,5 +356,39 @@ describe('findOverlappingBlocks', () => {
     const overlapping = findOverlappingBlocks(newBlockInput, existingBlocks)
     expect(overlapping).toHaveLength(1)
     expect(overlapping[0].id).toBe('2')
+  })
+})
+
+describe('formatDuration', () => {
+  it('should return "0m" for zero minutes', () => {
+    expect(formatDuration(0)).toBe('0m')
+  })
+
+  it('should return "0m" for negative minutes', () => {
+    expect(formatDuration(-15)).toBe('0m')
+  })
+
+  it('should format minutes only when less than 1 hour', () => {
+    expect(formatDuration(15)).toBe('15m')
+    expect(formatDuration(30)).toBe('30m')
+    expect(formatDuration(45)).toBe('45m')
+  })
+
+  it('should format hours only when minutes are exactly divisible by 60', () => {
+    expect(formatDuration(60)).toBe('1h')
+    expect(formatDuration(120)).toBe('2h')
+    expect(formatDuration(180)).toBe('3h')
+  })
+
+  it('should format hours and minutes when there is a remainder', () => {
+    expect(formatDuration(75)).toBe('1h 15m')
+    expect(formatDuration(90)).toBe('1h 30m')
+    expect(formatDuration(150)).toBe('2h 30m')
+    expect(formatDuration(195)).toBe('3h 15m')
+  })
+
+  it('should handle large durations', () => {
+    expect(formatDuration(480)).toBe('8h')
+    expect(formatDuration(510)).toBe('8h 30m')
   })
 })

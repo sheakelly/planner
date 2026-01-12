@@ -46,6 +46,22 @@ export function calculateDuration(start: string, end: string): number {
   return differenceInMinutes(parseISO(end), parseISO(start))
 }
 
+/**
+ * Format a duration in minutes to a human-readable string
+ * @param minutes - Duration in minutes
+ * @returns Formatted string like "2h 30m", "45m", "1h", or "0m"
+ */
+export function formatDuration(minutes: number): string {
+  if (minutes <= 0) return '0m'
+
+  const hours = Math.floor(minutes / 60)
+  const mins = minutes % 60
+
+  if (hours === 0) return `${mins}m`
+  if (mins === 0) return `${hours}h`
+  return `${hours}h ${mins}m`
+}
+
 export function checkOverlap(block1: Block, block2: Block): boolean {
   if (block1.dayId !== block2.dayId) return false
   if (block1.id === block2.id) return false

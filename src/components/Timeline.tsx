@@ -14,6 +14,7 @@ import {
 } from '../lib/hooks'
 import { BlockCard } from './BlockCard'
 import { Button } from './Button'
+import { DaySummary } from './DaySummary'
 import { TimelineSettings } from './TimelineSettings'
 import type { Block, BlockStatus, BlockType } from '../types'
 
@@ -730,7 +731,7 @@ export function Timeline({
         </div>
       </div>
 
-      {/* Sidebar - Details or Edit Form */}
+      {/* Mobile Sidebar - Details or Edit Form (mobile/tablet only) */}
       {(selectedBlock || editingBlock) && (
         <>
           {/* Mobile overlay backdrop */}
@@ -739,8 +740,8 @@ export function Timeline({
             onClick={handleCloseSidebar}
           />
 
-          {/* Sidebar content */}
-          <div className="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-lg bg-white p-6 shadow-lg lg:static lg:inset-auto lg:max-h-none lg:w-80 lg:rounded-lg">
+          {/* Mobile sidebar content */}
+          <div className="fixed inset-x-0 bottom-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-lg bg-white p-6 shadow-lg lg:hidden">
             {editingBlock ? (
               // Edit Form
               <>
@@ -1007,6 +1008,275 @@ export function Timeline({
           </div>
         </>
       )}
+
+      {/* Right Sidebar - Day Summary always visible, Block Details/Edit Form below when selected */}
+      <div className="hidden w-80 flex-col gap-4 lg:flex">
+        <DaySummary blocks={blocks} />
+
+        {/* Edit Form - shown below Day Summary when editing a block */}
+        {editingBlock && (
+          <div className="rounded-lg bg-white p-6 shadow-lg">
+            <div className="mb-4 flex items-start justify-between">
+              <h3 className="text-lg font-semibold text-slate-900">
+                Edit Block
+              </h3>
+              <button
+                onClick={handleCancelEdit}
+                className="rounded p-1 hover:bg-slate-100"
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  value={editFormData.title}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      title: e.target.value,
+                    })
+                  }
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                  placeholder="Block title"
+                  autoFocus
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Notes
+                </label>
+                <textarea
+                  value={editFormData.notes}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      notes: e.target.value,
+                    })
+                  }
+                  className="w-full resize-none rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                  placeholder="Notes (optional)"
+                  rows={3}
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Tags
+                </label>
+                <input
+                  type="text"
+                  value={editFormData.tags}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      tags: e.target.value,
+                    })
+                  }
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                  placeholder="Tags (comma separated)"
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Status
+                </label>
+                <select
+                  value={editFormData.status}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      status: e.target.value as BlockStatus,
+                    })
+                  }
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="planned">Planned</option>
+                  <option value="in-progress">In Progress</option>
+                  <option value="completed">Completed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Type
+                </label>
+                <select
+                  value={editFormData.type}
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      type: e.target.value as BlockType,
+                    })
+                  }
+                  className="w-full rounded-md border border-slate-300 px-3 py-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="deep-work">Deep Work</option>
+                  <option value="admin">Admin</option>
+                  <option value="meeting">Meeting</option>
+                  <option value="break">Break</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-2">
+              <Button
+                onClick={handleSaveEdit}
+                icon={<Check size={18} />}
+                className="flex-1"
+              >
+                Save
+              </Button>
+              <Button
+                variant="secondary"
+                onClick={handleCancelEdit}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Block Details - shown below Day Summary when a block is selected */}
+        {selectedBlock && !editingBlock && (
+          <div className="rounded-lg bg-white p-6 shadow-lg">
+            <div className="mb-4 flex items-start justify-between">
+              <h3 className="text-lg font-semibold text-slate-900">
+                Block Details
+              </h3>
+              <button
+                onClick={handleCloseSidebar}
+                className="rounded p-1 hover:bg-slate-100"
+                aria-label="Close"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Title
+                </label>
+                <p className="text-sm font-medium text-slate-900">
+                  {selectedBlock.title}
+                </p>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Time
+                </label>
+                <p className="text-sm text-slate-600">
+                  {format(parseISO(selectedBlock.start), 'h:mm a')} -{' '}
+                  {format(parseISO(selectedBlock.end), 'h:mm a')}
+                </p>
+                <p className="mt-1 text-xs text-slate-500">
+                  {selectedBlock.duration} minutes
+                </p>
+              </div>
+
+              {selectedBlock.notes && (
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Notes
+                  </label>
+                  <p className="text-sm whitespace-pre-wrap text-slate-600">
+                    {selectedBlock.notes}
+                  </p>
+                </div>
+              )}
+
+              {selectedBlock.tags.length > 0 && (
+                <div>
+                  <label className="mb-1 block text-sm font-medium text-slate-700">
+                    Tags
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedBlock.tags.map((tag) => (
+                      <span
+                        key={tag}
+                        className="inline-flex items-center rounded-md bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Status
+                </label>
+                <span
+                  className={`inline-flex rounded px-2 py-1 text-xs font-medium ${
+                    selectedBlock.status === 'completed'
+                      ? 'bg-green-100 text-green-700'
+                      : selectedBlock.status === 'in-progress'
+                        ? 'bg-yellow-100 text-yellow-700'
+                        : selectedBlock.status === 'cancelled'
+                          ? 'bg-red-100 text-red-700'
+                          : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  {selectedBlock.status}
+                </span>
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-slate-700">
+                  Type
+                </label>
+                <span
+                  className={`inline-flex rounded px-2 py-1 text-xs font-medium ${
+                    selectedBlock.type === 'deep-work'
+                      ? 'bg-violet-100 text-violet-700'
+                      : selectedBlock.type === 'admin'
+                        ? 'bg-stone-100 text-stone-700'
+                        : selectedBlock.type === 'meeting'
+                          ? 'bg-gray-100 text-gray-700'
+                          : selectedBlock.type === 'break'
+                            ? 'bg-emerald-100 text-emerald-700'
+                            : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  {TYPE_LABELS[selectedBlock.type]}
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6 flex gap-2">
+              <Button
+                onClick={() => handleStartEdit(selectedBlock)}
+                icon={<Edit2 size={18} />}
+                className="w-1/2"
+              >
+                Edit
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => handleDeleteBlock(selectedBlock.id)}
+                icon={<Trash2 size={18} />}
+                className="w-1/2"
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        )}
+      </div>
 
       {/* Settings Modal */}
       {showSettings && (
