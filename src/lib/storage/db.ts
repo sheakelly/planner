@@ -3,7 +3,7 @@ import type { IDBPDatabase } from 'idb'
 import type { Block, Day, UserPreferences, WorkingMemory } from '../../types'
 
 const DB_NAME = 'planner-db'
-const DB_VERSION = 3
+const DB_VERSION = 5
 
 interface PlannerDB {
   days: {
@@ -54,6 +54,11 @@ export async function getDB(): Promise<IDBPDatabase<PlannerDB>> {
       // Working Memory store (added in version 3)
       if (oldVersion < 3 && !db.objectStoreNames.contains('workingMemory')) {
         db.createObjectStore('workingMemory', { keyPath: 'id' })
+      }
+
+      // Remove msAuth store (version 5) - no longer used
+      if (oldVersion < 5 && db.objectStoreNames.contains('msAuth')) {
+        db.deleteObjectStore('msAuth')
       }
     },
   })
